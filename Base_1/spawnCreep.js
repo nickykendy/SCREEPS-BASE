@@ -29,6 +29,7 @@ var spawnNewCreep = {
         var repairers;
         var miners;
         var expanders;
+        var gatherers;
 
         var needBuilder = 0;
         var needHarvester = 0;
@@ -38,6 +39,7 @@ var spawnNewCreep = {
         var needRepairer = 0;
         var needMiner = 0;
         var needExpander = 0;
+        var needGatherer = 0;
 
         var builderParts = [];
         var upgraderParts = [];
@@ -47,6 +49,7 @@ var spawnNewCreep = {
         var repairerParts = [];
         var minerParts = [];
         var expanderParts = [];
+        var gathererParts = [];
 
         // get the instances of every kind of creep
         harvesters = _.filter(Game.creeps, (creep) => creep.memory.role == 'harvester' && creep.memory.belong == roomName);
@@ -57,6 +60,7 @@ var spawnNewCreep = {
         repairers = _.filter(Game.creeps, (creep) => creep.memory.role == 'repairer' && creep.memory.belong == roomName);
         miners = _.filter(Game.creeps, (creep) => creep.memory.role == 'miner' && creep.memory.belong == roomName);
         expanders = _.filter(Game.creeps, (creep) => creep.memory.role == 'expander' && creep.memory.belong == roomName);
+        gatherers = _.filter(Game.creeps, (creep) => creep.memory.role == 'gatherer' && creep.memory.belong == roomName);
 
         // UI
         if (Game.spawns[spawnName].room.name == roomName) {
@@ -73,7 +77,6 @@ var spawnNewCreep = {
         }
 
         // change the spawn creep number by controller level
-
         if (constructSites.length) {
             needBuilder = 1;
         } else {
@@ -97,8 +100,10 @@ var spawnNewCreep = {
             builderParts = [WORK,CARRY,MOVE,MOVE];
             upgraderParts = [WORK,CARRY,MOVE,MOVE];
             harvesterParts = [WORK,CARRY,MOVE,MOVE];
+            gathererParts = [WORK,WORK,WORK,WORK,MOVE];
+            needGatherer = 0;
             needHarvester = 1;
-            needUpgrader = 2;
+            needUpgrader = 1;
 
         } else if (level == 3) {
             builderParts = [WORK,WORK,WORK,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE];
@@ -222,6 +227,16 @@ var spawnNewCreep = {
                 console.log(spawnName + ' spawns new Expander: ' + newName + ", Not Enough Source");
             } else {
                 console.log(spawnName + ' spawns new Expander: ' + newName + ", Successful");
+            }
+        }
+
+        if (gatherers.length < needGatherer && harvesters.length >= needHarvester) {
+            let newName = 'Gatherer' + '_' + roomName + '_' + Game.time;
+            let bSpawn = Game.spawns[spawnName].spawnCreep(gathererParts, newName, {memory: {role: 'gatherer', belong: roomName}});
+            if (bSpawn == -6) {
+                console.log(spawnName + ' spawns new Gatherer: ' + newName + ", Not Enough Source");
+            } else {
+                console.log(spawnName + ' spawns new Gatherer: ' + newName + ", Successful");
             }
         }
 

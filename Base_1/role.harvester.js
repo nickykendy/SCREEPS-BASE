@@ -20,7 +20,7 @@ var roleHarvester = {
                     structure.structureType == STRUCTURE_TOWER) && structure.energy < structure.energyCapacity;
             }
         });
-
+        console.log('hello');
         if (creep.room.energyAvailable < energyAll) {
             creep.memory.refill = true;
         } else {

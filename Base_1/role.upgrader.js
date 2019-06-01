@@ -12,28 +12,45 @@ var roleUpgrader = {
         }
 
         if (creep.memory.upgrading) {
-            if (creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(creep.room.controller, {visualizePathStyle: {stroke: '#ffffff'}});
+            if(creep.room.controller) {
+                /*
+                if (creep.room.name == 'W23N29') {
+                    if (creep.signController(creep.room.controller, "I'm new to this game! Somebody tells me how to play please! I'm dying!") == ERR_NOT_IN_RANGE) {
+                        creep.moveTo(creep.room.controller);
+                    }
+                } else if (creep.room.name == 'W23N28') {
+                    if (creep.signController(creep.room.controller, "这游戏能打中文么？!") == ERR_NOT_IN_RANGE) {
+                        creep.moveTo(creep.room.controller);
+                    }
+                } else if (creep.room.name == 'W22N28') {
+                    if (creep.signController(creep.room.controller, "尼玛写代码好特么难!") == ERR_NOT_IN_RANGE) {
+                        creep.moveTo(creep.room.controller);
+                    }
+                }
+                */
+                if (creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE) {
+                    creep.moveTo(creep.room.controller, {visualizePathStyle: {stroke: '#ffffff'}});
+                }
             }
         } else {
-            var sources;
+            const containers = creep.room.find(FIND_STRUCTURES, {
+                filter: (structure) => {
+                    return structure.structureType == STRUCTURE_CONTAINER && structure.store[RESOURCE_ENERGY] > 0
+                }
+            });
             if (creep.room.name == 'W23N29') {
-                sources = creep.room.find(FIND_SOURCES);
-                if (creep.harvest(sources[1]) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(sources[1], {visualizePathStyle: {stroke: '#ffaa00'}});
+                if (containers.length > 0) {
+                    if (creep.withdraw(containers[1], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                        creep.moveTo(containers[1], {visualizePathStyle: {stroke: '#ffaa00'}});
+                    }
                 }
             } else if (creep.room.name == 'W23N28') {
-                sources = creep.room.find(FIND_SOURCES);
-                if (creep.harvest(sources[1]) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(sources[1], {visualizePathStyle: {stroke: '#ffaa00'}});
+                if (containers.length > 0) {
+                    if (creep.withdraw(containers[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                        creep.moveTo(containers[0], {visualizePathStyle: {stroke: '#ffaa00'}});
+                    }
                 }
             } else if (creep.room.name == 'W22N28') {
-                const containers = creep.room.find(FIND_STRUCTURES, {
-                    filter: (structure) => {
-                        return structure.structureType == STRUCTURE_CONTAINER && structure.store[RESOURCE_ENERGY] > 0
-                    }
-                });
-                
                 if (containers.length > 0) {
                     if (creep.withdraw(containers[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                         creep.moveTo(containers[0], {visualizePathStyle: {stroke: '#ffaa00'}});

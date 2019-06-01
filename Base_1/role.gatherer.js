@@ -1,17 +1,19 @@
 var roleGatherer = {
 
     run: function(creep) {
-        const sources = creep.room.find(FIND_SOURCES);
-        const closeContainer = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+        const sources = creep.pos.findClosestByRange(FIND_SOURCES);
+        const myContainers = creep.room.find(FIND_STRUCTURES, {
+            filter: (structure) => {
+                return structure.structureType == STRUCTURE_CONTAINER;
+            }
+        });
 
-        if (closeContainer.hits < closeContainer.hitsMax * 0.9) {
-            if (creep.repair(closeContainer) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(closeContainer, {visualizePathStyle: {stroke: COLOR_YELLOW}});
-            }
+        if (creep.memory.gender == 'male') {
+            creep.moveTo(myContainers[0].pos, {visualizePathStyle: {stroke: '#ffaa00'}});
+            creep.harvest(sources);
         } else {
-            if (creep.harvest(sources[0]) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(sources[0], {visualizePathStyle: {stroke: '#ffaa00'}});
-            }
+            creep.moveTo(myContainers[1].pos, {visualizePathStyle: {stroke: '#ffaa00'}});
+            creep.harvest(sources);
         }
     }
 };

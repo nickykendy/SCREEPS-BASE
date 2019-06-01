@@ -11,7 +11,7 @@ var roleRepairer = {
             rampartRatio = 0.05;
         } else if (creep.room.name == 'W22N28') {
             wallRatio = 0.001;
-            rampartRatio = 0.01;
+            rampartRatio = 0.05;
         }
 
         const damagedDefense = creep.room.find(FIND_STRUCTURES, {
@@ -25,9 +25,10 @@ var roleRepairer = {
                 return structure.structureType == STRUCTURE_STORAGE
             }
         });
-        const damagedRoad = creep.room.find(FIND_STRUCTURES, {
+        const damagedStruct = creep.room.find(FIND_STRUCTURES, {
             filter: (structure) => {
-                return structure.structureType == STRUCTURE_ROAD && structure.hits < structure.hitsMax*0.75;
+                return (structure.structureType == STRUCTURE_ROAD && structure.hits < structure.hitsMax*0.75) ||
+                    (structure.structureType == STRUCTURE_CONTAINER && structure.hits < structure.hitsMax)
             }
         });
         const carryTotal = _.sum(creep.carry);
@@ -44,31 +45,62 @@ var roleRepairer = {
             var dropped = creep.pos.findClosestByRange(FIND_DROPPED_RESOURCES);
             var closestHostile = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
             var tomb = creep.pos.findClosestByRange(FIND_TOMBSTONES);
-            var sources = creep.room.find(FIND_SOURCES);
-            if (!closestHostile) {
-                if (tomb) {
-                    if (_.sum(tomb.store) > 0) {
-                        if (creep.withdraw(tomb, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                            creep.moveTo(tomb, {visualizePathStyle: {stroke: '#ffaa00'}});
+            const containers = creep.room.find(FIND_STRUCTURES, {
+                filter: (structure) => {
+                    return structure.structureType == STRUCTURE_CONTAINER && structure.store[RESOURCE_ENERGY] > 0
+                }
+            });
 
-                        }
-                    } else {
-                        if (creep.harvest(sources[0]) == ERR_NOT_IN_RANGE) {
-                            creep.moveTo(sources[0], {visualizePathStyle: {stroke: '#ffaa00'}});
-                        }
-                    }
-                } else if (!tomb && dropped) {
-                    if (creep.pickup(dropped) == ERR_NOT_IN_RANGE) {
-                        creep.moveTo(dropped, {visualizePathStyle: {stroke: '#ffaa00'}});
+            if (!closestHostile && tomb) {
+                if (_.sum(tomb.store) > 0) {
+                    if (creep.withdraw(tomb, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                        creep.moveTo(tomb, {visualizePathStyle: {stroke: '#ffaa00'}});
                     }
                 } else {
-                    if (creep.harvest(sources[0]) == ERR_NOT_IN_RANGE) {
-                        creep.moveTo(sources[0], {visualizePathStyle: {stroke: '#ffaa00'}});
+                    if (creep.room.name == 'W23N29') {
+                        if (containers.length > 0) {
+                            if (creep.withdraw(containers[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                                creep.moveTo(containers[0], {visualizePathStyle: {stroke: '#ffaa00'}});
+                            }
+                        }
+                    } else if (creep.room.name == 'W23N28') {
+                        if (containers.length > 0) {
+                            if (creep.withdraw(containers[1], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                                creep.moveTo(containers[1], {visualizePathStyle: {stroke: '#ffaa00'}});
+                            }
+                        }
+                    } else if (creep.room.name == 'W22N28') {
+                        if (containers.length > 0) {
+                            if (creep.withdraw(containers[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                                creep.moveTo(containers[0], {visualizePathStyle: {stroke: '#ffaa00'}});
+                            }
+                        }
                     }
                 }
+            } else if (!closestHostile && !tomb && dropped) {
+                if (creep.pickup(dropped) == ERR_NOT_IN_RANGE) {
+                    creep.moveTo(dropped, {visualizePathStyle: {stroke: '#ffaa00'}});
+
+                }
             } else {
-                if (creep.harvest(sources[0]) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(sources[0], {visualizePathStyle: {stroke: '#ffaa00'}});
+                if (creep.room.name == 'W23N29') {
+                    if (containers.length > 0) {
+                        if (creep.withdraw(containers[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                            creep.moveTo(containers[0], {visualizePathStyle: {stroke: '#ffaa00'}});
+                        }
+                    }
+                } else if (creep.room.name == 'W23N28') {
+                    if (containers.length > 0) {
+                        if (creep.withdraw(containers[1], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                            creep.moveTo(containers[1], {visualizePathStyle: {stroke: '#ffaa00'}});
+                        }
+                    }
+                } else if (creep.room.name == 'W22N28') {
+                    if (containers.length > 0) {
+                        if (creep.withdraw(containers[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                            creep.moveTo(containers[0], {visualizePathStyle: {stroke: '#ffaa00'}});
+                        }
+                    }
                 }
             }
         // transfer rare resource to my storage
@@ -83,9 +115,9 @@ var roleRepairer = {
             }
         // repair my structure
         } else {
-            if (damagedRoad.length > 0) {
-                if (creep.repair(damagedRoad[0]) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(damagedRoad[0], {visualizePathStyle: {stroke: COLOR_YELLOW}});
+            if (damagedStruct.length > 0) {
+                if (creep.repair(damagedStruct[0]) == ERR_NOT_IN_RANGE) {
+                    creep.moveTo(damagedStruct[0], {visualizePathStyle: {stroke: COLOR_YELLOW}});
                 }
             } else {
                 // repair the gate and the wall

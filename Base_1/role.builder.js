@@ -19,24 +19,24 @@ var roleBuilder = {
                 }
             }
         } else {
-            var sources;
+            const containers = creep.room.find(FIND_STRUCTURES, {
+                filter: (structure) => {
+                    return structure.structureType == STRUCTURE_CONTAINER && structure.store[RESOURCE_ENERGY] > 0
+                }
+            });
             if (creep.room.name == 'W23N29') {
-                sources = creep.room.find(FIND_SOURCES_ACTIVE);
-                if (creep.harvest(sources[0]) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(sources[0], {visualizePathStyle: {stroke: '#ffaa00'}});
+                if (containers.length > 0) {
+                    if (creep.withdraw(containers[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                        creep.moveTo(containers[0], {visualizePathStyle: {stroke: '#ffaa00'}});
+                    }
                 }
             } else if (creep.room.name == 'W23N28') {
-                sources = creep.room.find(FIND_SOURCES);
-                if (creep.harvest(sources[1]) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(sources[1], {visualizePathStyle: {stroke: '#ffaa00'}});
+                if (containers.length > 0) {
+                    if (creep.withdraw(containers[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                        creep.moveTo(containers[0], {visualizePathStyle: {stroke: '#ffaa00'}});
+                    }
                 }
             } else if (creep.room.name == 'W22N28') {
-                const containers = creep.room.find(FIND_STRUCTURES, {
-                    filter: (structure) => {
-                        return structure.structureType == STRUCTURE_CONTAINER && structure.store[RESOURCE_ENERGY] > 0
-                    }
-                });
-
                 if (containers.length > 0) {
                     if (creep.withdraw(containers[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                         creep.moveTo(containers[0], {visualizePathStyle: {stroke: '#ffaa00'}});

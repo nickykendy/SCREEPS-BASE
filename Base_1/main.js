@@ -20,6 +20,8 @@ module.exports.loop = function () {
                     }
                 });
                 const energyAll = 300 + extensions.length * 50;
+                const sources = Game.spawns[spawnName].room.find(FIND_SOURCES);
+
 
                 Game.spawns[spawnName].room.visual.text(
                     '🥮: ' + Game.rooms[roomName].energyAvailable + " / " + energyAll,

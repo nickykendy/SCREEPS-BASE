@@ -19,6 +19,9 @@ var spawnNewCreep = {
         const myExtractors = Game.spawns[spawnName].room.find(FIND_MY_STRUCTURES, {
             filter: { structureType: STRUCTURE_EXTRACTOR }
         });
+        const myContainers = Game.rooms[roomName].find(FIND_STRUCTURES, {
+            filter: { structureType: STRUCTURE_CONTAINER }
+        });
 
         // init the creep
         var harvesters;
@@ -67,7 +70,7 @@ var spawnNewCreep = {
             var xx = Game.spawns[spawnName].pos.x - 5;
             var yy = Game.spawns[spawnName].pos.y + 11;
             Game.spawns[spawnName].room.visual.text(
-                '🚜:'+harvesters.length+','+'🛠️:'+builders.length+','+'⚡:'+upgraders.length+','+'⚔️:'+attackers.length,
+                '🚜:'+harvesters.length+','+'🚜:'+gatherers.length+','+'🛠️:'+builders.length+','+'⚡:'+upgraders.length+','+'⚔️:'+attackers.length,
                 xx, yy, {align: 'left', opacity: 0.8}
             );
             Game.spawns[spawnName].room.visual.text(
@@ -81,6 +84,12 @@ var spawnNewCreep = {
             needBuilder = 1;
         } else {
             needBuilder = 0;
+        }
+
+        if (myContainers.length) {
+            needGatherer = myContainers.length;
+        } else {
+            needGatherer = 0;
         }
 
         if (minerals[0].mineralAmount > 0 && myExtractors.length > 0) {
@@ -97,60 +106,66 @@ var spawnNewCreep = {
             needUpgrader = 2;
 
         } else if (level == 2) {
-            builderParts = [WORK,CARRY,MOVE,MOVE];
-            upgraderParts = [WORK,CARRY,MOVE,MOVE];
-            harvesterParts = [WORK,CARRY,MOVE,MOVE];
-            gathererParts = [WORK,WORK,WORK,WORK,MOVE];
-            needGatherer = 0;
+            builderParts = [WORK,WORK,CARRY,CARRY,MOVE,MOVE];
+            upgraderParts = [WORK,WORK,CARRY,CARRY,MOVE,MOVE];
+            harvesterParts = [CARRY,CARRY,CARRY,CARRY,MOVE,MOVE];
+            gathererParts = [WORK,WORK,WORK,WORK,MOVE,MOVE];
+            repairerParts = [WORK,WORK,CARRY,CARRY,MOVE,MOVE];
             needHarvester = 1;
-            needUpgrader = 1;
+            needUpgrader = 3;
+            needRepairer = 1;
 
         } else if (level == 3) {
             builderParts = [WORK,WORK,WORK,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE];
             upgraderParts = [WORK,WORK,WORK,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE];
-            harvesterParts = [WORK,WORK,WORK,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE];
+            harvesterParts = [CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE];
+            gathererParts = [WORK,WORK,WORK,WORK,WORK,MOVE,MOVE];
             repairerParts = [WORK,WORK,WORK,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE];
-            needHarvester = 2;
-            needUpgrader = 2;
+            needHarvester = 1;
+            needUpgrader = 3;
             needRepairer = 1;
 
         } else if (level == 4) {
             builderParts = [WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE];
             upgraderParts = [WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE];
             harvesterParts = [WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE];
+            gathererParts = [WORK,WORK,WORK,WORK,WORK,MOVE,MOVE];
             repairerParts = [WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE];
-            needHarvester = 2;
+            needHarvester = 1;
             needUpgrader = 2;
             needRepairer = 1;
 
         } else if (level == 5) {
-            builderParts = [WORK,CARRY,MOVE];
+            builderParts = [WORK,CARRY,MOVE,WORK,CARRY,MOVE,WORK,CARRY,MOVE];
             upgraderParts = [WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE];
-            harvesterParts = [WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE];
+            harvesterParts = [CARRY,CARRY,MOVE,CARRY,CARRY,MOVE,CARRY,CARRY,MOVE,CARRY,CARRY,MOVE,CARRY,CARRY,MOVE];
+            attackerParts = [TOUGH,TOUGH,TOUGH,TOUGH,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,ATTACK,ATTACK,ATTACK,ATTACK];
             claimerParts = [CLAIM,MOVE,MOVE];
+            gathererParts = [WORK,WORK,MOVE,WORK,WORK,MOVE,WORK,WORK,MOVE];
             repairerParts = [WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE];
-            expanderParts = [WORK,WORK,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE];
-            needHarvester = 2;
+            minerParts = [WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE];
+            needHarvester = 1;
             needUpgrader = 3;
             needRepairer = 1;
             needClaimer = 0;
 
         } else {
-            builderParts = [WORK,CARRY,MOVE];
+            builderParts = [WORK,CARRY,MOVE,WORK,CARRY,MOVE,WORK,CARRY,MOVE];
             upgraderParts = [WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE];
-            harvesterParts = [WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE];
+            harvesterParts = [CARRY,CARRY,MOVE,CARRY,CARRY,MOVE,CARRY,CARRY,MOVE,CARRY,CARRY,MOVE,CARRY,CARRY,MOVE];
             attackerParts = [TOUGH,TOUGH,TOUGH,TOUGH,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,ATTACK,ATTACK,ATTACK,ATTACK];
             claimerParts = [CLAIM,MOVE,MOVE];
+            gathererParts = [WORK,WORK,MOVE,WORK,WORK,MOVE,WORK,WORK,MOVE];
             repairerParts = [WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE];
             minerParts = [WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE];
-            needHarvester = 2;
+            needHarvester = 1;
             needUpgrader = 3;
             needRepairer = 1;
             needAttacker = 0;
         }
 
         // spawn the creep
-        if (builders.length < needBuilder && harvesters.length >= needHarvester) {
+        if (builders.length < needBuilder && harvesters.length >= needHarvester && gatherers.length >= needGatherer) {
             let newName = 'Builder' + '_' + roomName + '_' + Game.time;
             let bSpawn = Game.spawns[spawnName].spawnCreep(builderParts, newName, {memory: {role: 'builder', belong: roomName}});
             if (bSpawn == -6) {
@@ -160,7 +175,7 @@ var spawnNewCreep = {
             }
         }
 
-        if (upgraders.length < needUpgrader && harvesters.length >= needHarvester) {
+        if (upgraders.length < needUpgrader && harvesters.length >= needHarvester && gatherers.length >= needGatherer) {
             let newName = 'Upgrader' + '_' + roomName + '_' + Game.time;
             let bSpawn = Game.spawns[spawnName].spawnCreep(upgraderParts, newName, {memory: {role: 'upgrader', belong: roomName}});
             if (bSpawn == -6) {
@@ -180,7 +195,7 @@ var spawnNewCreep = {
             }
         }
 
-        if (attackers.length < needAttacker && harvesters.length >= needHarvester) {
+        if (attackers.length < needAttacker && harvesters.length >= needHarvester && gatherers.length >= needGatherer) {
             let newName = 'Attacker' + '_' + roomName + '_' + Game.time;
             let bSpawn = Game.spawns[spawnName].spawnCreep(attackerParts, newName, {memory: {role: 'attacker', belong: roomName}});
             if (bSpawn == -6) {
@@ -190,7 +205,7 @@ var spawnNewCreep = {
             }
         }
 
-        if (claimers.length < needClaimer && harvesters.length >= needHarvester) {
+        if (claimers.length < needClaimer && harvesters.length >= needHarvester && gatherers.length >= needGatherer) {
             let newName = 'Claimer' + '_' + roomName + '_' + Game.time;
             let bSpawn = Game.spawns[spawnName].spawnCreep(claimerParts, newName, {memory: {role: 'claimer', belong: roomName}});
             if (bSpawn == -6) {
@@ -200,7 +215,7 @@ var spawnNewCreep = {
             }
         }
 
-        if (repairers.length < needRepairer && harvesters.length >= needHarvester) {
+        if (repairers.length < needRepairer && harvesters.length >= needHarvester && gatherers.length >= needGatherer) {
             let newName = 'Repairer' + '_' + roomName + '_' + Game.time;
             let bSpawn = Game.spawns[spawnName].spawnCreep(repairerParts, newName, {memory: {role: 'repairer', belong: roomName}});
             if (bSpawn == -6) {
@@ -210,7 +225,7 @@ var spawnNewCreep = {
             }
         }
 
-        if (miners.length < needMiner && harvesters.length >= needHarvester) {
+        if (miners.length < needMiner && harvesters.length >= needHarvester && gatherers.length >= needGatherer) {
             let newName = 'Miner' + '_' + roomName + '_' + Game.time;
             let bSpawn = Game.spawns[spawnName].spawnCreep(minerParts, newName, {memory: {role: 'miner', belong: roomName}});
             if (bSpawn == -6) {
@@ -220,7 +235,7 @@ var spawnNewCreep = {
             }
         }
 
-        if (expanders.length < needExpander && harvesters.length >= needHarvester) {
+        if (expanders.length < needExpander && harvesters.length >= needHarvester && gatherers.length >= needGatherer) {
             let newName = 'Expander' + '_' + roomName + '_' + Game.time;
             let bSpawn = Game.spawns[spawnName].spawnCreep(expanderParts, newName, {memory: {role: 'expander', belong: roomName}});
             if (bSpawn == -6) {
@@ -230,9 +245,17 @@ var spawnNewCreep = {
             }
         }
 
-        if (gatherers.length < needGatherer && harvesters.length >= needHarvester) {
+        if (gatherers.length < needGatherer) {
             let newName = 'Gatherer' + '_' + roomName + '_' + Game.time;
-            let bSpawn = Game.spawns[spawnName].spawnCreep(gathererParts, newName, {memory: {role: 'gatherer', belong: roomName}});
+            let bSpawn
+            if (gatherers.length == 0) {
+                bSpawn = Game.spawns[spawnName].spawnCreep(gathererParts, newName, {memory: {role: 'gatherer', belong: roomName, gender: 'male'}});
+            } else if (gatherers.length > 0 && gatherers[0].memory.gender == 'male') {
+                bSpawn = Game.spawns[spawnName].spawnCreep(gathererParts, newName, {memory: {role: 'gatherer', belong: roomName, gender: 'female'}});
+            } else if (gatherers.length > 0 && gatherers[0].memory.gender == 'female') {
+                bSpawn = Game.spawns[spawnName].spawnCreep(gathererParts, newName, {memory: {role: 'gatherer', belong: roomName, gender: 'male'}});
+            }
+
             if (bSpawn == -6) {
                 console.log(spawnName + ' spawns new Gatherer: ' + newName + ", Not Enough Source");
             } else {

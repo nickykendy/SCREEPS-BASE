@@ -6,7 +6,7 @@ var roleHarvester = {
                 return structure.structureType == STRUCTURE_EXTENSION;
             }
         });
-        const energyAll = 300 + extensions.length * 50;
+        const energyAll = 300 + extensions.length * extensions[0].energyCapacity;
         const carryTotal = _.sum(creep.carry);
         const mySpawn = creep.room.find(FIND_STRUCTURES, {
             filter: (structure) => {
@@ -15,9 +15,10 @@ var roleHarvester = {
         });
         const targets = creep.room.find(FIND_STRUCTURES, {
             filter: (structure) => {
-                return (structure.structureType == STRUCTURE_EXTENSION ||
+                return ((structure.structureType == STRUCTURE_EXTENSION ||
                     structure.structureType == STRUCTURE_SPAWN ||
-                    structure.structureType == STRUCTURE_TOWER) && structure.energy < structure.energyCapacity;
+                    structure.structureType == STRUCTURE_TOWER) && structure.energy < structure.energyCapacity) ||
+                    structure.structureType == STRUCTURE_STORAGE;
             }
         });
 
@@ -41,20 +42,24 @@ var roleHarvester = {
             var tomb = creep.pos.findClosestByRange(FIND_TOMBSTONES);
             const containers = creep.room.find(FIND_STRUCTURES, {
                 filter: (structure) => {
-                    return structure.structureType == STRUCTURE_CONTAINER && structure.store[RESOURCE_ENERGY] > 0
+                    return structure.structureType == STRUCTURE_CONTAINER;
                 }
             });
 
             if (!closestHostile && tomb) {
                 if (_.sum(tomb.store) > 0) {
-                    if (creep.withdraw(tomb, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                        creep.moveTo(tomb, {visualizePathStyle: {stroke: '#ffaa00'}});
+                    for (let resourceType in tomb.store) {
+                        if (creep.withdraw(tomb, resourceType) == ERR_NOT_IN_RANGE) {
+                            creep.moveTo(tomb, {visualizePathStyle: {stroke: '#ffffff'}});
+                            break;
+                        }
                     }
                 } else {
                     if (creep.room.name == 'W23N29') {
                         if (containers.length > 0) {
                             if (creep.withdraw(containers[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                                 creep.moveTo(containers[0], {visualizePathStyle: {stroke: '#ffaa00'}});
+                                
                             }
                         }
                     } else if (creep.room.name == 'W23N28') {
@@ -92,7 +97,6 @@ var roleHarvester = {
                     }
                 }
             }
-
         } else if (!creep.memory.harvesting && carryTotal <= creep.carryCapacity) {
             if (targets.length > 0) {
                 for (let i in targets) {
@@ -110,14 +114,14 @@ var roleHarvester = {
                         }
                     // transfer rare resource to my storage
                     } else if (targets[i].structureType == STRUCTURE_STORAGE && !creep.memory.harvesting && creep.carry.energy < carryTotal) {
-                       for (let resourceType in creep.carry) {
+                        for (let resourceType in creep.carry) {
                            if (resourceType != RESOURCE_ENERGY) {
                                if (creep.transfer(targets[i], resourceType) == ERR_NOT_IN_RANGE) {
                                    creep.moveTo(targets[i], {visualizePathStyle: {stroke: '#ffffff'}});
                                    break;
                                }
                            }
-                       }
+                        }
                     }
                 }
             }

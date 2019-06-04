@@ -82,20 +82,16 @@ var spawnNewCreep = {
         // change the spawn creep number by controller level
         if (constructSites.length) {
             needBuilder = 1;
-        } else {
-            needBuilder = 0;
         }
 
         if (myContainers.length) {
             needGatherer = myContainers.length;
-        } else {
-            needGatherer = 0;
         }
 
         if (minerals[0].mineralAmount > 0 && myExtractors.length > 0) {
-            needMiner = 1;
-        } else {
-            needMiner = 0;
+            if (myExtractors[0].isActive()) {
+                needMiner = 1;
+            }
         }
 
         if (level == 1) {
@@ -112,54 +108,54 @@ var spawnNewCreep = {
             gathererParts = [WORK,WORK,WORK,WORK,MOVE,MOVE];
             repairerParts = [WORK,WORK,CARRY,CARRY,MOVE,MOVE];
             needHarvester = 1;
-            needUpgrader = 3;
+            needUpgrader = 2;
             needRepairer = 1;
 
         } else if (level == 3) {
-            builderParts = [WORK,WORK,WORK,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE];
-            upgraderParts = [WORK,WORK,WORK,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE];
-            harvesterParts = [CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE];
-            gathererParts = [WORK,WORK,WORK,WORK,WORK,MOVE,MOVE];
-            repairerParts = [WORK,WORK,WORK,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE];
+            builderParts = [WORK,CARRY,MOVE,WORK,CARRY,MOVE,WORK,CARRY,MOVE];
+            upgraderParts = [WORK,CARRY,MOVE,WORK,CARRY,MOVE,WORK,CARRY,MOVE,WORK,CARRY,MOVE];
+            harvesterParts = [CARRY,CARRY,MOVE,CARRY,CARRY,MOVE,CARRY,CARRY,MOVE,CARRY,CARRY,MOVE];
+            gathererParts = [WORK,WORK,MOVE,WORK,WORK,MOVE,WORK,WORK,MOVE];
+            repairerParts = [WORK,CARRY,MOVE,WORK,CARRY,MOVE,WORK,CARRY,MOVE,WORK,CARRY,MOVE];
             needHarvester = 1;
-            needUpgrader = 3;
+            needUpgrader = 2;
             needRepairer = 1;
 
         } else if (level == 4) {
-            builderParts = [WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE];
-            upgraderParts = [WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE];
-            harvesterParts = [WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE];
-            gathererParts = [WORK,WORK,WORK,WORK,WORK,MOVE,MOVE];
-            repairerParts = [WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE];
+            builderParts = [WORK,CARRY,MOVE,WORK,CARRY,MOVE,WORK,CARRY,MOVE];
+            upgraderParts = [WORK,CARRY,MOVE,WORK,CARRY,MOVE,WORK,CARRY,MOVE,WORK,CARRY,MOVE,WORK,CARRY,MOVE];
+            harvesterParts = [CARRY,CARRY,MOVE,CARRY,CARRY,MOVE,CARRY,CARRY,MOVE,CARRY,CARRY,MOVE,CARRY,CARRY,MOVE];
+            gathererParts = [WORK,WORK,MOVE,WORK,WORK,MOVE,WORK,WORK,MOVE];
+            repairerParts = [WORK,CARRY,MOVE,WORK,CARRY,MOVE,WORK,CARRY,MOVE,WORK,CARRY,MOVE,WORK,CARRY,MOVE];
             needHarvester = 1;
             needUpgrader = 2;
             needRepairer = 1;
 
         } else if (level == 5) {
             builderParts = [WORK,CARRY,MOVE,WORK,CARRY,MOVE,WORK,CARRY,MOVE];
-            upgraderParts = [WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE];
+            upgraderParts = [WORK,CARRY,MOVE,WORK,CARRY,MOVE,WORK,CARRY,MOVE,WORK,CARRY,MOVE,WORK,CARRY,MOVE];
             harvesterParts = [CARRY,CARRY,MOVE,CARRY,CARRY,MOVE,CARRY,CARRY,MOVE,CARRY,CARRY,MOVE,CARRY,CARRY,MOVE];
             attackerParts = [TOUGH,TOUGH,TOUGH,TOUGH,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,ATTACK,ATTACK,ATTACK,ATTACK];
             claimerParts = [CLAIM,MOVE,MOVE];
             gathererParts = [WORK,WORK,MOVE,WORK,WORK,MOVE,WORK,WORK,MOVE];
-            repairerParts = [WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE];
-            minerParts = [WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE];
+            repairerParts = [WORK,CARRY,MOVE,WORK,CARRY,MOVE,WORK,CARRY,MOVE,WORK,CARRY,MOVE,WORK,CARRY,MOVE];
+            minerParts = [WORK,CARRY,MOVE,WORK,CARRY,MOVE,WORK,CARRY,MOVE,WORK,CARRY,MOVE,WORK,CARRY,MOVE];
             needHarvester = 1;
-            needUpgrader = 3;
+            needUpgrader = 2;
             needRepairer = 1;
             needClaimer = 0;
 
         } else {
             builderParts = [WORK,CARRY,MOVE,WORK,CARRY,MOVE,WORK,CARRY,MOVE];
-            upgraderParts = [WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE];
+            upgraderParts = [WORK,CARRY,MOVE,WORK,CARRY,MOVE,WORK,CARRY,MOVE,WORK,CARRY,MOVE,WORK,CARRY,MOVE,WORK,CARRY,MOVE];
             harvesterParts = [CARRY,CARRY,MOVE,CARRY,CARRY,MOVE,CARRY,CARRY,MOVE,CARRY,CARRY,MOVE,CARRY,CARRY,MOVE];
             attackerParts = [TOUGH,TOUGH,TOUGH,TOUGH,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,ATTACK,ATTACK,ATTACK,ATTACK];
             claimerParts = [CLAIM,MOVE,MOVE];
             gathererParts = [WORK,WORK,MOVE,WORK,WORK,MOVE,WORK,WORK,MOVE];
-            repairerParts = [WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE];
-            minerParts = [WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE];
+            repairerParts = [WORK,CARRY,MOVE,WORK,CARRY,MOVE,WORK,CARRY,MOVE,WORK,CARRY,MOVE,WORK,CARRY,MOVE,MOVE,MOVE,MOVE];
+            minerParts = [WORK,CARRY,MOVE,WORK,CARRY,MOVE,WORK,CARRY,MOVE,WORK,CARRY,MOVE,WORK,CARRY,MOVE,WORK,CARRY,MOVE];
             needHarvester = 1;
-            needUpgrader = 3;
+            needUpgrader = 2;
             needRepairer = 1;
             needAttacker = 0;
         }

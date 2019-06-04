@@ -7,6 +7,11 @@ var roleMiner = {
                 return structure.structureType == STRUCTURE_STORAGE
             }
         });
+        const myTerminal = creep.room.find(FIND_STRUCTURES, {
+            filter: (structure) => {
+                return structure.structureType == STRUCTURE_TERMINAL
+            }
+        });
         const minerals = creep.room.find(FIND_MINERALS);
 
         if (carryTotal == 0 && !creep.memory.harvesting) {
@@ -23,8 +28,8 @@ var roleMiner = {
             }
         } else {
             for (let resourceType in creep.carry) {
-                if (creep.transfer(myStorage[0], resourceType) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(myStorage[0], {visualizePathStyle: {stroke: '#ffffff'}});
+                if (creep.transfer(myTerminal[0], resourceType) == ERR_NOT_IN_RANGE) {
+                    creep.moveTo(myTerminal[0], {visualizePathStyle: {stroke: '#ffffff'}});
                     break;
                 }
             }

@@ -10,7 +10,7 @@ var roleRepairer = {
             wallRatio = 0.005;
             rampartRatio = 0.05;
         } else if (creep.room.name == 'W22N28') {
-            wallRatio = 0.001;
+            wallRatio = 0.005;
             rampartRatio = 0.05;
         }
 
@@ -22,7 +22,7 @@ var roleRepairer = {
         });
         const myStorage = creep.room.find(FIND_STRUCTURES, {
             filter: (structure) => {
-                return structure.structureType == STRUCTURE_STORAGE
+                return structure.structureType == STRUCTURE_STORAGE;
             }
         });
         const damagedStruct = creep.room.find(FIND_STRUCTURES, {
@@ -47,14 +47,17 @@ var roleRepairer = {
             var tomb = creep.pos.findClosestByRange(FIND_TOMBSTONES);
             const containers = creep.room.find(FIND_STRUCTURES, {
                 filter: (structure) => {
-                    return structure.structureType == STRUCTURE_CONTAINER && structure.store[RESOURCE_ENERGY] > 0
+                    return structure.structureType == STRUCTURE_CONTAINER;
                 }
             });
 
             if (!closestHostile && tomb) {
                 if (_.sum(tomb.store) > 0) {
-                    if (creep.withdraw(tomb, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                        creep.moveTo(tomb, {visualizePathStyle: {stroke: '#ffaa00'}});
+                    for (let resourceType in tomb.store) {
+                        if (creep.withdraw(tomb, resourceType) == ERR_NOT_IN_RANGE) {
+                            creep.moveTo(tomb, {visualizePathStyle: {stroke: '#ffffff'}});
+                            break;
+                        }
                     }
                 } else {
                     if (creep.room.name == 'W23N29') {

@@ -7,11 +7,11 @@ var towerCommond = {
             wallRatio = 0.01;
             rampartRatio = 0.1;
         } else if (roomName == 'W23N28') {
-            wallRatio = 0.002;
+            wallRatio = 0.003;
             rampartRatio = 0.05;
         } else if (roomName == 'W22N28') {
-            wallRatio = 0.0005;
-            rampartRatio = 0.045;
+            wallRatio = 0.004;
+            rampartRatio = 0.05;
         }
 
         const woundedCreep = Game.spawns[spawnName].room.find(FIND_MY_CREEPS, {

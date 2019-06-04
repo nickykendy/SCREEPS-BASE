@@ -19,7 +19,7 @@ module.exports.loop = function () {
                         return structure.structureType == STRUCTURE_EXTENSION;
                     }
                 });
-                const energyAll = 300 + extensions.length * 50;
+                const energyAll = 300 + extensions.length * extensions[0].energyCapacity;
                 const sources = Game.spawns[spawnName].room.find(FIND_SOURCES);
 
 

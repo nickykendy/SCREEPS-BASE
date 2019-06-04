@@ -35,7 +35,7 @@ var roleUpgrader = {
         } else {
             const containers = creep.room.find(FIND_STRUCTURES, {
                 filter: (structure) => {
-                    return structure.structureType == STRUCTURE_CONTAINER && structure.store[RESOURCE_ENERGY] > 0
+                    return structure.structureType == STRUCTURE_CONTAINER;
                 }
             });
             if (creep.room.name == 'W23N29') {
